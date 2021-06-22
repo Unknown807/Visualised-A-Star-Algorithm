@@ -1,5 +1,6 @@
 package org.mg.view
 
+import javafx.beans.Observable
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.control.ChoiceBox
@@ -19,6 +20,8 @@ class CanvasView: View("Canvas View") {
     private val choicesList: ObservableList<String> = FXCollections.observableArrayList(choices)
     private val choiceBox: ChoiceBox<String> by fxid()
 
+    private var currentTool: String = "Pen"
+
     private var canvas: ResizableCanvas = ResizableCanvas()
 
     init {
@@ -30,5 +33,7 @@ class CanvasView: View("Canvas View") {
         // Set choice box options
         choiceBox.value = "Pen"
         choiceBox.items = choicesList
+
+        choiceBox.valueProperty().addListener { _, _, newValue -> currentTool = newValue }
     }
 }

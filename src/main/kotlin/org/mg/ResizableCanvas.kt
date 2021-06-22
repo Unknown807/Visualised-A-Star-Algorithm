@@ -6,7 +6,6 @@ import javafx.scene.canvas.GraphicsContext
 
 class ResizableCanvas: Canvas() {
     var size = 10
-        get() = field
         set(value) { field=value }
 
     init {

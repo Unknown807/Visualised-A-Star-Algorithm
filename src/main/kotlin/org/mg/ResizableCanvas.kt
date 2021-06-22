@@ -5,6 +5,9 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
 
 class ResizableCanvas: Canvas() {
+    var size = 10
+        get() = field
+        set(value) { field=value }
 
     init {
         widthProperty().addListener { evt: Observable? -> draw() }
@@ -12,12 +15,20 @@ class ResizableCanvas: Canvas() {
     }
 
     private fun draw() {
-        val gc: GraphicsContext = graphicsContext2D;
+        val gc: GraphicsContext = graphicsContext2D
 
-        gc.clearRect(0.0,0.0,width,height)
+        gc.clearRect(0.0, 0.0, width, height)
 
-        gc.strokeLine(0.0,0.0,width,height)
-        gc.strokeLine(0.0,height,width,0.0)
+        for (row in 0..size) {
+            for (col in 0..size) {
+                gc.strokeRect(
+                    col * width / size,
+                    row * height / size,
+                    width / size,
+                    height / size
+                )
+            }
+        }
     }
 
     override fun isResizable(): Boolean {

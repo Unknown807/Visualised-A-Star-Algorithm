@@ -9,13 +9,13 @@ import org.mg.controller.CanvasController
 
 class CanvasView: View("Canvas View") {
     override val root: BorderPane by fxml("/Canvas.fxml")
-    val optionsVbox: VBox by fxid()
-    var canvas: ResizableCanvas = ResizableCanvas()
+    private val optionsVbox: VBox by fxid()
+    private var canvas: ResizableCanvas = ResizableCanvas()
 
     init {
+        // Make canvas resizable
         root.center = canvas
-        canvas.widthProperty().bind(root.widthProperty() - optionsVbox.widthProperty())
-        canvas.heightProperty().bind(root.heightProperty())
+        canvas.widthProperty().bind(root.widthProperty() - optionsVbox.widthProperty() - 35)
+        canvas.heightProperty().bind(root.heightProperty() - 20)
     }
-
 }

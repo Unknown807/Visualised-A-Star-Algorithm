@@ -7,7 +7,6 @@ import javafx.scene.paint.Color
 
 class ResizableCanvas: Canvas() {
     var size = 10
-        set(value) { field=value }
 
     init {
         widthProperty().addListener { evt: Observable? -> draw() }
@@ -16,21 +15,21 @@ class ResizableCanvas: Canvas() {
 
     private fun draw() {
         val gc: GraphicsContext = graphicsContext2D
-        val rectWidth: Double = width / size
-        val rectHeight: Double = height / size
+        val widthPerRect: Double = width / size
+        val heightPerRect: Double = height / size
 
         gc.clearRect(0.0, 0.0, width, height)
 
         gc.fill = Color.WHITE;
         gc.fillRect(0.0, 0.0, width, height)
 
-        for (row in 0..size) {
-            for (col in 0..size) {
+        for (col in 0..size) {
+            for (row in 0..size) {
                 gc.strokeRect(
-                    col * rectWidth,
-                    row * rectHeight,
-                    rectWidth,
-                    rectHeight
+                    col * widthPerRect,
+                    row * heightPerRect,
+                    widthPerRect,
+                    heightPerRect
                 )
             }
         }

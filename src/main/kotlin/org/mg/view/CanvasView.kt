@@ -13,7 +13,7 @@ import org.mg.controller.CanvasController
 
 class CanvasView: View("Canvas View") {
     override val root: BorderPane by fxml("/Canvas.fxml")
-    //private val controller: CanvasController by inject()
+    private val controller: CanvasController by inject()
     private val optionsVbox: VBox by fxid()
 
     private val choices: ArrayList<String> = arrayListOf("Start", "Goal", "Pen", "Eraser")
@@ -35,5 +35,7 @@ class CanvasView: View("Canvas View") {
         choiceBox.items = choicesList
 
         choiceBox.valueProperty().addListener { _, _, newValue -> currentTool = newValue }
+
+        canvas.setOnMouseClicked { evt -> controller.selectRect(canvas, currentTool, evt.x, evt.y) }
     }
 }

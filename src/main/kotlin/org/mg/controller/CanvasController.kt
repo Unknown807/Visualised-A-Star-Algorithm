@@ -28,12 +28,31 @@ class CanvasController: Controller() {
     private fun makeRectObstacle(canvas: ResizableCanvas, row: Int, col: Int) {
         val node: GridNode = canvas.getNode(row, col)
 
+        if (node.obstacle) {
+            return
+        }
+
         node.obstacle = true
+
+        canvas.setFill("black")
         canvas.fillRect(row, col)
     }
 
     private fun makeRectFree(canvas: ResizableCanvas, row: Int, col: Int) {
+        val node: GridNode = canvas.getNode(row, col)
 
+        if (!node.obstacle) {
+            return
+        }
+
+        node.obstacle = false
+
+        canvas.setFill("white")
+
+        // So that the user can't draw lots of rects again and again
+        canvas.clearRect(row, col)
+        canvas.strokeRect(row, col)
+        canvas.fillRect(row, col)
     }
 
 }

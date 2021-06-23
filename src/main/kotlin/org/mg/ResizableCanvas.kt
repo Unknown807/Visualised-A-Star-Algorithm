@@ -35,17 +35,12 @@ class ResizableCanvas: Canvas() {
     private fun draw() {
         gc.clearRect(0.0, 0.0, width, height)
 
-        gc.fill = Color.WHITE;
+        setFill("white")
         gc.fillRect(0.0, 0.0, width, height)
 
         for (col in 0..size) {
             for (row in 0..size) {
-                gc.strokeRect(
-                    col * widthPerRect,
-                    row * heightPerRect,
-                    widthPerRect,
-                    heightPerRect
-                )
+                strokeRect(row, col)
             }
         }
     }
@@ -55,13 +50,37 @@ class ResizableCanvas: Canvas() {
     }
 
     fun fillRect(row: Int, col: Int) {
-        gc.fill = Color.BLACK
         gc.fillRect(
+            col * widthPerRect + 1,
+            row * heightPerRect + 1,
+            widthPerRect - 1.5,
+            heightPerRect - 1.5
+        )
+    }
+
+    fun clearRect(row: Int, col: Int) {
+        gc.clearRect(
+            col * widthPerRect + 1,
+            row * heightPerRect + 1,
+            widthPerRect - 1.5,
+            heightPerRect - 1.5
+        )
+    }
+
+    fun strokeRect(row: Int, col: Int) {
+        gc.strokeRect(
             col * widthPerRect,
             row * heightPerRect,
             widthPerRect,
             heightPerRect
         )
+    }
+
+    fun setFill(color: String) {
+        when (color) {
+            "white" -> gc.fill = Color.WHITE
+            "black" -> gc.fill = Color.BLACK
+        }
     }
 
     override fun isResizable(): Boolean {

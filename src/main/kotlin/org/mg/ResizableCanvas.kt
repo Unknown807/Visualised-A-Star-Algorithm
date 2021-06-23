@@ -8,6 +8,9 @@ import javafx.scene.paint.Color
 class ResizableCanvas: Canvas() {
     var size = 10
 
+    var sourceNodeDrawn = false
+    var goalNodeDrawn = false
+
     val widthPerRect: Double
         get() = width/size
     val heightPerRect: Double
@@ -37,8 +40,11 @@ class ResizableCanvas: Canvas() {
                 if (node.obstacle) {
                     setFill("black")
                     fillRect(row, col)
-                } else if (node.source || node.goal) {
+                } else if (node.source) {
                     setFill("blue")
+                    fillRect(row, col)
+                } else if (node.goal) {
+                    setFill("purple")
                     fillRect(row, col)
                 } else {
                     setFill("white")
@@ -85,6 +91,7 @@ class ResizableCanvas: Canvas() {
             "white" -> gc.fill = Color.WHITE
             "black" -> gc.fill = Color.BLACK
             "blue"  -> gc.fill = Color.BLUE
+            "purple" -> gc.fill = Color.PURPLE
         }
     }
 

@@ -16,7 +16,7 @@ class CanvasView: View("Canvas View") {
     private val controller: CanvasController by inject()
     private val optionsVbox: VBox by fxid()
 
-    private val choices: ArrayList<String> = arrayListOf("Start", "Goal", "Pen", "Eraser")
+    private val choices: ArrayList<String> = arrayListOf("Source", "Goal", "Pen", "Eraser")
     private val choicesList: ObservableList<String> = FXCollections.observableArrayList(choices)
     private val choiceBox: ChoiceBox<String> by fxid()
 

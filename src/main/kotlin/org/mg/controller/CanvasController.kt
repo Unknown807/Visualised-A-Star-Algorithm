@@ -14,6 +14,7 @@ class CanvasController: Controller() {
      from, then multiply each point by the widthPerRect and heightPerRect
      to get the coords for the upper left corner
      */
+
     fun selectRect(canvas: ResizableCanvas, currentTool: String, mouseX: Double, mouseY: Double) {
         val row: Int = (mouseY/canvas.heightPerRect).toInt()
         val col: Int = (mouseX/canvas.widthPerRect).toInt()
@@ -21,40 +22,69 @@ class CanvasController: Controller() {
         when (currentTool) {
             "Pen" -> makeRectObstacle(canvas, row, col)
             "Eraser" -> makeRectFree(canvas, row, col)
+            "Source" -> makeRectSource(canvas, row, col)
+            "Goal" -> makeRectGoal(canvas, row, col)
         }
 
+    }
+
+    private fun makeRectSource(canvas: ResizableCanvas, row: Int, col: Int) {
+        val node: GridNode = canvas.getNode(row, col)
+
+        if (!node.obstacle && !node.source && !node.goal && !canvas.sourceNodeDrawn) {
+            node.source = true
+            canvas.sourceNodeDrawn = true
+
+            canvas.setFill("blue")
+            canvas.fillRect(row, col)
+        }
+    }
+
+    private fun makeRectGoal(canvas: ResizableCanvas, row: Int, col: Int) {
+        val node: GridNode = canvas.getNode(row, col)
+
+        if (!node.obstacle && !node.source && !node.goal && !canvas.goalNodeDrawn) {
+            node.goal = true
+            canvas.goalNodeDrawn = true
+
+            canvas.setFill("purple")
+            canvas.fillRect(row, col)
+        }
     }
 
     private fun makeRectObstacle(canvas: ResizableCanvas, row: Int, col: Int) {
         val node: GridNode = canvas.getNode(row, col)
 
-        if (node.obstacle || node.source || node.goal ) {
-            return
+        if (!node.obstacle && !node.source && !node.goal ) {
+            node.obstacle = true
+            canvas.setFill("black")
+            canvas.fillRect(row, col)
         }
-
-        node.obstacle = true
-
-        canvas.setFill("black")
-        canvas.fillRect(row, col)
     }
 
     private fun makeRectFree(canvas: ResizableCanvas, row: Int, col: Int) {
         val node: GridNode = canvas.getNode(row, col)
 
-        if (!node.obstacle && !node.source && !node.goal) {
-            return
+        if (node.obstacle || node.source || node.goal) {
+
+            if (node.source) {
+                canvas.sourceNodeDrawn = false
+            } else if (node.goal) {
+                canvas.goalNodeDrawn = false
+            }
+
+            node.obstacle = false
+            node.goal = false
+            node.source = false
+
+            canvas.setFill("white")
+
+            // So that the user can't draw lots of rects again and again
+            canvas.clearRect(row, col)
+            canvas.strokeRect(row, col)
+            canvas.fillRect(row, col)
+
         }
-
-        node.obstacle = false
-        node.goal = false
-        node.source = false
-
-        canvas.setFill("white")
-
-        // So that the user can't draw lots of rects again and again
-        canvas.clearRect(row, col)
-        canvas.strokeRect(row, col)
-        canvas.fillRect(row, col)
     }
 
 }

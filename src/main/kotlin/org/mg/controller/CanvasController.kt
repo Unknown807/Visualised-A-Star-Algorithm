@@ -28,7 +28,7 @@ class CanvasController: Controller() {
     private fun makeRectObstacle(canvas: ResizableCanvas, row: Int, col: Int) {
         val node: GridNode = canvas.getNode(row, col)
 
-        if (node.obstacle) {
+        if (node.obstacle || node.source || node.goal ) {
             return
         }
 
@@ -41,11 +41,13 @@ class CanvasController: Controller() {
     private fun makeRectFree(canvas: ResizableCanvas, row: Int, col: Int) {
         val node: GridNode = canvas.getNode(row, col)
 
-        if (!node.obstacle) {
+        if (!node.obstacle && !node.source && !node.goal) {
             return
         }
 
         node.obstacle = false
+        node.goal = false
+        node.source = false
 
         canvas.setFill("white")
 

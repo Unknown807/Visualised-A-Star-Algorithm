@@ -22,14 +22,6 @@ class ResizableCanvas: Canvas() {
     init {
         widthProperty().addListener { evt: Observable? -> draw() }
         heightProperty().addListener { evt: Observable? -> draw() }
-
-//        for ( row in nodeMatrix.indices ) {
-//            var rowStr: String = ""
-//            for (col in nodeMatrix.indices) {
-//                rowStr += "${nodeMatrix[row][col].col}, "
-//            }
-//            println(rowStr)
-//        }
     }
 
     private fun draw() {
@@ -38,8 +30,20 @@ class ResizableCanvas: Canvas() {
         setFill("white")
         gc.fillRect(0.0, 0.0, width, height)
 
-        for (col in 0..size) {
-            for (row in 0..size) {
+        for (col in 0 until size) {
+            for (row in 0 until size) {
+                val node: GridNode = getNode(row, col)
+
+                if (node.obstacle) {
+                    setFill("black")
+                    fillRect(row, col)
+                } else if (node.source || node.goal) {
+                    setFill("blue")
+                    fillRect(row, col)
+                } else {
+                    setFill("white")
+                }
+
                 strokeRect(row, col)
             }
         }
@@ -80,6 +84,7 @@ class ResizableCanvas: Canvas() {
         when (color) {
             "white" -> gc.fill = Color.WHITE
             "black" -> gc.fill = Color.BLACK
+            "blue"  -> gc.fill = Color.BLUE
         }
     }
 

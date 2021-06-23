@@ -4,12 +4,15 @@ import javafx.beans.Observable
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.control.ChoiceBox
+import javafx.scene.control.Label
+import javafx.scene.control.Slider
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.VBox
 import org.mg.ResizableCanvas
 import tornadofx.*
 
 import org.mg.controller.CanvasController
+import kotlin.math.floor
 
 class CanvasView: View("Canvas View") {
     override val root: BorderPane by fxml("/Canvas.fxml")
@@ -19,6 +22,11 @@ class CanvasView: View("Canvas View") {
     private val choices: ArrayList<String> = arrayListOf("Source", "Goal", "Pen", "Eraser")
     private val choicesList: ObservableList<String> = FXCollections.observableArrayList(choices)
     private val choiceBox: ChoiceBox<String> by fxid()
+
+    private val sizeLabel: Label by fxid()
+    private val delayLabel: Label by fxid()
+    private val sizeSlider: Slider by fxid()
+    private val delaySlider: Slider by fxid()
 
     private var currentTool: String = "Pen"
 
@@ -36,6 +44,18 @@ class CanvasView: View("Canvas View") {
 
         choiceBox.valueProperty().addListener { _, _, newValue -> currentTool = newValue }
 
+        sizeSlider.valueProperty().addListener { _, _, newValue ->
+            val roundedValue: Double = floor(newValue.toDouble()/10.0) *10.0
+            sizeSlider.valueProperty().set(roundedValue)
+            sizeLabel.text = "Size: ${roundedValue.toInt()}x${roundedValue.toInt()}"
+        }
+
+        delaySlider.valueProperty().addListener { _, _, newValue ->
+            val roundedValue: Double = floor(newValue.toDouble()/10.0) *10.0
+            delaySlider.valueProperty().set(roundedValue)
+            delayLabel.text = "Animation Delay: ${roundedValue.toInt()}ms"
+        }
+        
         canvas.setOnMouseClicked { evt -> controller.selectRect(canvas, currentTool, evt.x, evt.y) }
     }
 }

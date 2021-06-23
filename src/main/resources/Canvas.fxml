@@ -17,22 +17,22 @@
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </padding>
          <children>
-            <Label text="Size: 10x10" VBox.vgrow="ALWAYS">
+            <Label fx:id="sizeLabel" text="Size: 10x10" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
             </Label>
-            <Slider VBox.vgrow="ALWAYS">
+            <Slider fx:id="sizeSlider" max="50.0" min="10.0" value="10.0" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
             </Slider>
-            <Label text="Animation Delay: 10ms" VBox.vgrow="ALWAYS">
+            <Label fx:id="delayLabel" text="Animation Delay: 10ms" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </Label>
-            <Slider VBox.vgrow="ALWAYS">
+            <Slider fx:id="delaySlider" min="10.0" value="10.0" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>

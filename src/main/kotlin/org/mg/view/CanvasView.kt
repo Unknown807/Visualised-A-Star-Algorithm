@@ -45,9 +45,11 @@ class CanvasView: View("Canvas View") {
         choiceBox.valueProperty().addListener { _, _, newValue -> currentTool = newValue }
 
         sizeSlider.valueProperty().addListener { _, _, newValue ->
-            val roundedValue: Double = floor(newValue.toDouble()/10.0) *10.0
-            sizeSlider.valueProperty().set(roundedValue)
-            sizeLabel.text = "Size: ${roundedValue.toInt()}x${roundedValue.toInt()}"
+            val roundedValue: Int = (floor(newValue.toDouble()/10.0) *10.0).toInt()
+            sizeSlider.valueProperty().set(roundedValue+0.0)
+            sizeLabel.text = "Size: ${roundedValue}x${roundedValue}"
+
+            canvas.changeSize(roundedValue)
         }
 
         delaySlider.valueProperty().addListener { _, _, newValue ->
@@ -55,7 +57,7 @@ class CanvasView: View("Canvas View") {
             delaySlider.valueProperty().set(roundedValue)
             delayLabel.text = "Animation Delay: ${roundedValue.toInt()}ms"
         }
-        
+
         canvas.setOnMouseClicked { evt -> controller.selectRect(canvas, currentTool, evt.x, evt.y) }
     }
 }

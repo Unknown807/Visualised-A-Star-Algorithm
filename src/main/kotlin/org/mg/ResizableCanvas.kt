@@ -55,8 +55,16 @@ class ResizableCanvas: Canvas() {
         }
     }
 
-    fun getNode(row: Int, col: Int): GridNode {
-        return nodeMatrix[row][col]
+    fun changeSize(newSize: Int) {
+        size = newSize
+        nodeMatrix = Array(size) { row ->
+            Array(size) { col -> GridNode(row, col) }
+        }
+
+        sourceNodeDrawn = false
+        goalNodeDrawn = false
+        draw()
+
     }
 
     fun fillRect(row: Int, col: Int) {
@@ -93,6 +101,10 @@ class ResizableCanvas: Canvas() {
             "blue"  -> gc.fill = Color.BLUE
             "purple" -> gc.fill = Color.PURPLE
         }
+    }
+
+    fun getNode(row: Int, col: Int): GridNode {
+        return nodeMatrix[row][col]
     }
 
     override fun isResizable(): Boolean {

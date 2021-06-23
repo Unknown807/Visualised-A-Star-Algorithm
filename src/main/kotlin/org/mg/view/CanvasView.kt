@@ -22,7 +22,7 @@ class CanvasView: View("Canvas View") {
 
     private var currentTool: String = "Pen"
 
-    private var canvas: ResizableCanvas = ResizableCanvas()
+    private val canvas: ResizableCanvas = ResizableCanvas()
 
     init {
         // Make canvas resizable

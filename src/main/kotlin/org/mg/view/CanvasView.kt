@@ -1,6 +1,5 @@
 package org.mg.view
 
-import javafx.beans.Observable
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.control.Button
@@ -9,7 +8,8 @@ import javafx.scene.control.Label
 import javafx.scene.control.Slider
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.VBox
-import org.mg.ResizableCanvas
+import org.mg.algorithm.AStarAlgorithm
+import org.mg.custom.ResizableCanvas
 import tornadofx.*
 
 import org.mg.controller.CanvasController
@@ -42,6 +42,7 @@ class CanvasView: View("Canvas View") {
         canvas.widthProperty().bind(root.widthProperty() - optionsVbox.widthProperty() - 35)
         canvas.heightProperty().bind(root.heightProperty() - 20)
 
+        runButton.setOnAction { AStarAlgorithm.runAlgorithm(canvas) }
         clearButton.setOnAction { canvas.changeSize(canvas.size) }
 
         // Set choice box options

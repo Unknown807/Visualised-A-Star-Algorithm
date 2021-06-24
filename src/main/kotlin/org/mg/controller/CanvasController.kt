@@ -1,7 +1,7 @@
 package org.mg.controller
 
-import org.mg.GridNode
-import org.mg.ResizableCanvas
+import org.mg.custom.GridNode
+import org.mg.custom.ResizableCanvas
 import tornadofx.*
 
 class CanvasController: Controller() {
@@ -39,6 +39,7 @@ class CanvasController: Controller() {
         if (!node.obstacle && !node.source && !node.goal && !canvas.sourceNodeDrawn) {
             node.source = true
             canvas.sourceNodeDrawn = true
+            canvas.sourceNode = node
 
             canvas.setFill("blue")
             canvas.fillRect(row, col)
@@ -51,6 +52,7 @@ class CanvasController: Controller() {
         if (!node.obstacle && !node.source && !node.goal && !canvas.goalNodeDrawn) {
             node.goal = true
             canvas.goalNodeDrawn = true
+            canvas.goalNode = node
 
             canvas.setFill("purple")
             canvas.fillRect(row, col)
@@ -74,8 +76,10 @@ class CanvasController: Controller() {
 
             if (node.source) {
                 canvas.sourceNodeDrawn = false
+                canvas.sourceNode = null
             } else if (node.goal) {
                 canvas.goalNodeDrawn = false
+                canvas.goalNode = null
             }
 
             node.obstacle = false

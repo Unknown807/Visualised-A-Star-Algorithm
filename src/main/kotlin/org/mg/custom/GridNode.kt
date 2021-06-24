@@ -1,9 +1,9 @@
-package org.mg
+package org.mg.custom
 
 class GridNode(var row: Int, var col: Int) {
-    private var HCost: Double = 0.0
-    private var GCost: Double = 0.0
-    private var FCost: Double = 0.0
+    var HCost: Double = 0.0
+    var GCost: Double = 0.0
+    var FCost: Double = 0.0
 
     var obstacle: Boolean = false
     var source: Boolean = false

@@ -1,4 +1,4 @@
-package org.mg
+package org.mg.custom
 
 import javafx.beans.Observable
 import javafx.scene.canvas.Canvas
@@ -9,7 +9,10 @@ class ResizableCanvas: Canvas() {
     var size = 10
 
     var sourceNodeDrawn = false
+    var sourceNode: GridNode? = null
+
     var goalNodeDrawn = false
+    var goalNode: GridNode? = null
 
     val widthPerRect: Double
         get() = width/size

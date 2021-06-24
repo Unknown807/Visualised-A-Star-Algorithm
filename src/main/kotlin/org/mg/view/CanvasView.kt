@@ -3,6 +3,7 @@ package org.mg.view
 import javafx.beans.Observable
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import javafx.scene.control.Button
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.Label
 import javafx.scene.control.Slider
@@ -28,6 +29,9 @@ class CanvasView: View("Canvas View") {
     private val sizeSlider: Slider by fxid()
     private val delaySlider: Slider by fxid()
 
+    private val clearButton: Button by fxid()
+    private val runButton: Button by fxid()
+
     private var currentTool: String = "Pen"
 
     private val canvas: ResizableCanvas = ResizableCanvas()
@@ -38,12 +42,17 @@ class CanvasView: View("Canvas View") {
         canvas.widthProperty().bind(root.widthProperty() - optionsVbox.widthProperty() - 35)
         canvas.heightProperty().bind(root.heightProperty() - 20)
 
+        clearButton.setOnAction { canvas.changeSize(canvas.size) }
+
         // Set choice box options
         choiceBox.value = "Pen"
         choiceBox.items = choicesList
-
         choiceBox.valueProperty().addListener { _, _, newValue -> currentTool = newValue }
 
+        canvas.setOnMouseClicked { evt -> controller.selectRect(canvas, currentTool, evt.x, evt.y) }
+        canvas.setOnMouseDragged { evt -> controller.selectRect(canvas, currentTool, evt.x, evt.y) }
+
+        // Make sure sliders can only use increment values
         sizeSlider.valueProperty().addListener { _, _, newValue ->
             val roundedValue: Int = (floor(newValue.toDouble()/10.0) *10.0).toInt()
             sizeSlider.valueProperty().set(roundedValue+0.0)
@@ -57,7 +66,5 @@ class CanvasView: View("Canvas View") {
             delaySlider.valueProperty().set(roundedValue)
             delayLabel.text = "Animation Delay: ${roundedValue.toInt()}ms"
         }
-
-        canvas.setOnMouseClicked { evt -> controller.selectRect(canvas, currentTool, evt.x, evt.y) }
     }
 }

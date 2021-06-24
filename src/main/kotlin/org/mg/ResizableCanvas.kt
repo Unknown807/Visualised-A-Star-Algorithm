@@ -64,7 +64,6 @@ class ResizableCanvas: Canvas() {
         sourceNodeDrawn = false
         goalNodeDrawn = false
         draw()
-
     }
 
     fun fillRect(row: Int, col: Int) {

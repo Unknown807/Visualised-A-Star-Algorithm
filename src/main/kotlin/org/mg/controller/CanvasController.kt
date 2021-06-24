@@ -19,6 +19,11 @@ class CanvasController: Controller() {
         val row: Int = (mouseY/canvas.heightPerRect).toInt()
         val col: Int = (mouseX/canvas.widthPerRect).toInt()
 
+        // To make sure mouse dragging doesn't cause error drawing by being out of bounds
+        if (row >= canvas.size || col >= canvas.size || row < 0 || col < 0) {
+            return
+        }
+
         when (currentTool) {
             "Pen" -> makeRectObstacle(canvas, row, col)
             "Eraser" -> makeRectFree(canvas, row, col)

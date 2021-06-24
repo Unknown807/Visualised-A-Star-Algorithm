@@ -42,7 +42,7 @@ class CanvasView: View("Canvas View") {
         canvas.widthProperty().bind(root.widthProperty() - optionsVbox.widthProperty() - 35)
         canvas.heightProperty().bind(root.heightProperty() - 20)
 
-        runButton.setOnAction { AStarAlgorithm.runAlgorithm(canvas) }
+        runButton.setOnAction { AStarAlgorithm.startAlgorithm(canvas) }
         clearButton.setOnAction { canvas.changeSize(canvas.size) }
 
         // Set choice box options

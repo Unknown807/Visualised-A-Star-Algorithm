@@ -52,6 +52,7 @@ class CanvasView: View("Canvas View") {
                 }
             }
         }
+
         clearButton.setOnAction {
             if (!algorithmRunning) {
                 canvas.changeSize(canvas.size)

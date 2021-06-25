@@ -72,7 +72,7 @@ class AStarAlgorithm {
                 }
 
                 // Give delay for user to view screen, then reset board
-                Thread.sleep(3000)
+                Thread.sleep(10_000)
                 resetAlgorithm(canvas)
                 runLater {
                     statusLabel.textFill = Color.BLACK

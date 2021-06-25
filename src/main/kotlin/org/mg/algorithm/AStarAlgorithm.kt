@@ -3,6 +3,7 @@ package org.mg.algorithm
 import org.mg.custom.GridNode
 import org.mg.custom.ResizableCanvas
 import kotlin.collections.ArrayList
+import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -47,7 +48,8 @@ class AStarAlgorithm {
         }
 
         private fun runAlgorithm(canvas: ResizableCanvas): Boolean {
-            val node: GridNode = unevaluatedNodes.minBy { it -> it.FCost }!!
+            //val node: GridNode = unevaluatedNodes.minBy { it -> it.FCost }!!
+            val node: GridNode = getMinFCostNode()
 
             unevaluatedNodes.remove(node)
             evaluatedNodes.add(node)
@@ -97,6 +99,24 @@ class AStarAlgorithm {
                 canvas.fillRect(node.row, node.col)
                 return drawPath(canvas, node.parentNode)
             }
+        }
+
+        private fun getMinFCostNode(): GridNode {
+            var minNode: GridNode = unevaluatedNodes[0]
+
+            for ( i in 1 until unevaluatedNodes.size ) {
+                val node = unevaluatedNodes[i]
+
+                if (node.FCost < minNode.FCost) {
+                    minNode = node
+                } else if (node.FCost == minNode.FCost) {
+                    if (node.HCost < minNode.HCost) {
+                        minNode = node
+                    }
+                }
+            }
+
+            return minNode
         }
 
         private fun getNodeNeighbours(canvas: ResizableCanvas, node: GridNode): ArrayList<GridNode> {

@@ -32,7 +32,7 @@
                   <Insets top="10.0" />
                </VBox.margin>
             </Label>
-            <Slider fx:id="delaySlider" min="10.0" value="10.0" VBox.vgrow="ALWAYS">
+            <Slider fx:id="delaySlider" max="500.0" min="10.0" value="10.0" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>

@@ -13,6 +13,7 @@ import org.mg.custom.ResizableCanvas
 import tornadofx.*
 
 import org.mg.controller.CanvasController
+import kotlin.concurrent.thread
 import kotlin.math.floor
 
 class CanvasView: View("Canvas View") {
@@ -42,7 +43,11 @@ class CanvasView: View("Canvas View") {
         canvas.widthProperty().bind(root.widthProperty() - optionsVbox.widthProperty() - 35)
         canvas.heightProperty().bind(root.heightProperty() - 20)
 
-        runButton.setOnAction { AStarAlgorithm.startAlgorithm(canvas) }
+        runButton.setOnAction {
+            thread {
+                AStarAlgorithm.startAlgorithm(canvas, delaySlider.value.toLong())
+            }
+        }
         clearButton.setOnAction { canvas.changeSize(canvas.size) }
 
         // Set choice box options

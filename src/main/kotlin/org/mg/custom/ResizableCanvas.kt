@@ -102,6 +102,8 @@ class ResizableCanvas: Canvas() {
             "black" -> gc.fill = Color.BLACK
             "blue"  -> gc.fill = Color.BLUE
             "purple" -> gc.fill = Color.PURPLE
+            "red" -> gc.fill = Color.RED
+            "green" -> gc.fill = Color.GREEN
         }
     }
 
@@ -114,10 +116,10 @@ class ResizableCanvas: Canvas() {
     }
 
     override fun prefWidth(nwidth: Double): Double {
-        return width
+        return nwidth
     }
 
     override fun prefHeight(nheight: Double): Double {
-        return height
+        return nheight
     }
 }

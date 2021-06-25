@@ -2,6 +2,7 @@ package org.mg.algorithm
 
 import org.mg.custom.GridNode
 import org.mg.custom.ResizableCanvas
+import kotlin.collections.ArrayList
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -17,7 +18,7 @@ class AStarAlgorithm {
         private var widthPerRect: Double = 0.0
         private var heightPerRect: Double = 0.0
 
-        fun startAlgorithm(canvas: ResizableCanvas) {
+        fun startAlgorithm(canvas: ResizableCanvas, delay: Long) {
             if (canvas.sourceNode === null || canvas.goalNode === null) {
                 return // Include error alert here
             }
@@ -27,9 +28,8 @@ class AStarAlgorithm {
             var found: Boolean = runAlgorithm(canvas)
             while (!found) {
                 found = runAlgorithm(canvas)
+                Thread.sleep(delay)
             }
-
-            println(found)
 
         }
 
@@ -48,11 +48,15 @@ class AStarAlgorithm {
 
         private fun runAlgorithm(canvas: ResizableCanvas): Boolean {
             val node: GridNode = unevaluatedNodes.minBy { it -> it.FCost }!!
+
             unevaluatedNodes.remove(node)
             evaluatedNodes.add(node)
+            canvas.setFill("red")
+            canvas.fillRect(node.row, node.col)
 
-            if (node === canvas.sourceNode) {
-                return true// Found source node
+            if (node === canvas.goalNode) {
+                drawPath(canvas, node)
+                return true // Found source node
             }
 
             val neighbours: ArrayList<GridNode> = getNodeNeighbours(canvas, node)
@@ -75,12 +79,24 @@ class AStarAlgorithm {
 
                     if (!unevaluatedNodes.contains(neighbourNode)) {
                         unevaluatedNodes.add(neighbourNode)
+                        canvas.setFill("green")
+                        canvas.fillRect(neighbourNode.row, neighbourNode.col)
                     }
                 }
 
             }
 
             return false
+        }
+
+        private fun drawPath(canvas: ResizableCanvas, node: GridNode?) {
+            if (node === null) {
+                return
+            } else {
+                canvas.setFill("blue")
+                canvas.fillRect(node.row, node.col)
+                return drawPath(canvas, node.parentNode)
+            }
         }
 
         private fun getNodeNeighbours(canvas: ResizableCanvas, node: GridNode): ArrayList<GridNode> {

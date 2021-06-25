@@ -2,10 +2,7 @@ package org.mg.view
 
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import javafx.scene.control.Button
-import javafx.scene.control.ChoiceBox
-import javafx.scene.control.Label
-import javafx.scene.control.Slider
+import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.VBox
 import org.mg.algorithm.AStarAlgorithm
@@ -33,7 +30,10 @@ class CanvasView: View("Canvas View") {
     private val clearButton: Button by fxid()
     private val runButton: Button by fxid()
 
+    private val statusLabel: Label by fxid()
+
     private var currentTool: String = "Pen"
+    private var algorithmRunning: Boolean = false
 
     private val canvas: ResizableCanvas = ResizableCanvas()
 
@@ -44,33 +44,54 @@ class CanvasView: View("Canvas View") {
         canvas.heightProperty().bind(root.heightProperty() - 20)
 
         runButton.setOnAction {
-            thread {
-                AStarAlgorithm.startAlgorithm(canvas, delaySlider.value.toLong())
+            if (!algorithmRunning) {
+                algorithmRunning = true
+                thread {
+                    AStarAlgorithm.startAlgorithm(canvas, statusLabel, delaySlider.value.toLong())
+                    algorithmRunning = false
+                }
             }
         }
-        clearButton.setOnAction { canvas.changeSize(canvas.size) }
+        clearButton.setOnAction {
+            if (!algorithmRunning) {
+                canvas.changeSize(canvas.size)
+            }
+        }
 
         // Set choice box options
         choiceBox.value = "Pen"
         choiceBox.items = choicesList
         choiceBox.valueProperty().addListener { _, _, newValue -> currentTool = newValue }
 
-        canvas.setOnMouseClicked { evt -> controller.selectRect(canvas, currentTool, evt.x, evt.y) }
-        canvas.setOnMouseDragged { evt -> controller.selectRect(canvas, currentTool, evt.x, evt.y) }
+        canvas.setOnMouseClicked { evt ->
+            if (!algorithmRunning) {
+                controller.selectRect(canvas, currentTool, evt.x, evt.y)
+            }
+        }
+
+        canvas.setOnMouseDragged { evt ->
+            if (!algorithmRunning) {
+                controller.selectRect(canvas, currentTool, evt.x, evt.y)
+            }
+        }
 
         // Make sure sliders can only use increment values
         sizeSlider.valueProperty().addListener { _, _, newValue ->
-            val roundedValue: Int = (floor(newValue.toDouble()/10.0) *10.0).toInt()
-            sizeSlider.valueProperty().set(roundedValue+0.0)
-            sizeLabel.text = "Size: ${roundedValue}x${roundedValue}"
+            if (!algorithmRunning) {
+                val roundedValue: Int = (floor(newValue.toDouble() / 10.0) * 10.0).toInt()
+                sizeSlider.valueProperty().set(roundedValue + 0.0)
+                sizeLabel.text = "Size: ${roundedValue}x${roundedValue}"
 
-            canvas.changeSize(roundedValue)
+                canvas.changeSize(roundedValue)
+            }
         }
 
         delaySlider.valueProperty().addListener { _, _, newValue ->
-            val roundedValue: Double = floor(newValue.toDouble()/10.0) *10.0
-            delaySlider.valueProperty().set(roundedValue)
-            delayLabel.text = "Animation Delay: ${roundedValue.toInt()}ms"
+            if (!algorithmRunning) {
+                val roundedValue: Double = floor(newValue.toDouble() / 10.0) * 10.0
+                delaySlider.valueProperty().set(roundedValue)
+                delayLabel.text = "Animation Delay: ${roundedValue.toInt()}ms"
+            }
         }
     }
 }

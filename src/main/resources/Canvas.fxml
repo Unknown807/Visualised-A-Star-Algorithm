@@ -58,6 +58,8 @@
                   <Insets top="10.0" />
                </VBox.margin>
             </Button>
+            <Region prefHeight="166.0" prefWidth="214.0" VBox.vgrow="ALWAYS" />
+            <Label fx:id="statusLabel" text="Ready..." />
          </children>
       </VBox>
    </left>

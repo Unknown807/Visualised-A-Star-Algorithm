@@ -30,7 +30,7 @@ class ResizableCanvas: Canvas() {
         heightProperty().addListener { evt: Observable? -> draw() }
     }
 
-    private fun draw() {
+    fun draw() {
         gc.clearRect(0.0, 0.0, width, height)
 
         setFill("white")
@@ -66,6 +66,9 @@ class ResizableCanvas: Canvas() {
 
         sourceNodeDrawn = false
         goalNodeDrawn = false
+        sourceNode = null
+        goalNode = null
+
         draw()
     }
 

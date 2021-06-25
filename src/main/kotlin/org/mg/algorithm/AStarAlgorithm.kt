@@ -1,9 +1,12 @@
 package org.mg.algorithm
 
+import javafx.scene.control.Label
+import javafx.scene.paint.Color
 import org.mg.custom.GridNode
 import org.mg.custom.ResizableCanvas
+import tornadofx.*
 import kotlin.collections.ArrayList
-import kotlin.math.*
+import kotlin.math.abs
 
 class AStarAlgorithm {
 
@@ -14,38 +17,44 @@ class AStarAlgorithm {
         private lateinit var sourceNode: GridNode
         private lateinit var goalNode: GridNode
 
-        private var widthPerRect: Double = 0.0
-        private var heightPerRect: Double = 0.0
-
-        fun startAlgorithm(canvas: ResizableCanvas, delay: Long) {
+        fun startAlgorithm(canvas: ResizableCanvas, statusLabel: Label, delay: Long) {
             if (canvas.sourceNode === null || canvas.goalNode === null) {
-                return // Include error alert here
+                runLater {
+                    statusLabel.textFill = Color.RED
+                    statusLabel.text = "Source and goal node needed!"
+                }
+                return
             }
 
             setup(canvas)
 
-            var found: Boolean = runAlgorithm(canvas)
+            var found: Boolean = runAlgorithm(canvas, statusLabel)
             while (!found) {
-                found = runAlgorithm(canvas)
                 Thread.sleep(delay)
+                found = runAlgorithm(canvas, statusLabel)
             }
 
         }
 
         private fun setup(canvas: ResizableCanvas) {
-            widthPerRect = canvas.widthPerRect
-            heightPerRect = canvas.heightPerRect
-
             sourceNode = canvas.sourceNode!!
             goalNode = canvas.goalNode!!
 
             sourceNode.HCost = calculateDistance(sourceNode, goalNode)
-            sourceNode.FCost = sourceNode.GCost + sourceNode.HCost
 
             unevaluatedNodes.add(sourceNode)
         }
 
-        private fun runAlgorithm(canvas: ResizableCanvas): Boolean {
+        private fun runAlgorithm(canvas: ResizableCanvas, statusLabel: Label): Boolean {
+            if (unevaluatedNodes.size < 1) {
+                runLater {
+                    statusLabel.textFill = Color.RED
+                    statusLabel.text = "No possible paths found"
+                }
+                resetAlgorithm(canvas)
+                return true
+            }
+
             val node: GridNode = getMinFCostNode()
 
             unevaluatedNodes.remove(node)
@@ -54,8 +63,23 @@ class AStarAlgorithm {
             canvas.fillRect(node.row, node.col)
 
             if (node === canvas.goalNode) {
+                canvas.setFill("blue")
                 drawPath(canvas, node)
-                return true // Found source node
+
+                runLater {
+                    statusLabel.textFill = Color.GREEN
+                    statusLabel.text = "Algorithm Finished Successfully"
+                }
+
+                // Give delay for user to view screen, then reset board
+                Thread.sleep(3000)
+                resetAlgorithm(canvas)
+                runLater {
+                    statusLabel.textFill = Color.BLACK
+                    statusLabel.text = "Ready..."
+                }
+
+                return true // Found goal node
             }
 
             val neighbours: ArrayList<GridNode> = getNodeNeighbours(canvas, node)
@@ -73,7 +97,6 @@ class AStarAlgorithm {
 
                 if (nGCost < neighbourNode.GCost || !unevaluatedNodes.contains(neighbourNode)) {
                     neighbourNode.GCost = nGCost
-                    neighbourNode.FCost = neighbourNode.GCost + neighbourNode.HCost
                     neighbourNode.parentNode = node
 
                     if (!unevaluatedNodes.contains(neighbourNode)) {
@@ -88,11 +111,16 @@ class AStarAlgorithm {
             return false
         }
 
+        private fun resetAlgorithm(canvas: ResizableCanvas) {
+            unevaluatedNodes.clear()
+            evaluatedNodes.clear()
+            canvas.draw()
+        }
+
         private fun drawPath(canvas: ResizableCanvas, node: GridNode?) {
             if (node === null) {
                 return
             } else {
-                canvas.setFill("blue")
                 canvas.fillRect(node.row, node.col)
                 return drawPath(canvas, node.parentNode)
             }

@@ -11,10 +11,8 @@ class AStarAlgorithm {
         private val unevaluatedNodes: ArrayList<GridNode> = ArrayList()
         private val evaluatedNodes: ArrayList<GridNode> = ArrayList()
 
-        private var sourceNodeCornerX: Double = 0.0
-        private var sourceNodeCornerY: Double = 0.0
-        private var goalNodeCornerX: Double = 0.0
-        private var goalNodeCornerY: Double = 0.0
+        private lateinit var sourceNode: GridNode
+        private lateinit var goalNode: GridNode
 
         private var widthPerRect: Double = 0.0
         private var heightPerRect: Double = 0.0
@@ -26,9 +24,12 @@ class AStarAlgorithm {
 
             setup(canvas)
 
-            //while (true) {
-            runAlgorithm(canvas)
-            //}
+            var found: Boolean = runAlgorithm(canvas)
+            while (!found) {
+                found = runAlgorithm(canvas)
+            }
+
+            println(found)
 
         }
 
@@ -36,32 +37,50 @@ class AStarAlgorithm {
             widthPerRect = canvas.widthPerRect
             heightPerRect = canvas.heightPerRect
 
-            sourceNodeCornerX = canvas.sourceNode!!.col * widthPerRect
-            sourceNodeCornerY = canvas.sourceNode!!.row * heightPerRect
+            sourceNode = canvas.sourceNode!!
+            goalNode = canvas.goalNode!!
 
-            goalNodeCornerX = canvas.goalNode!!.col * widthPerRect
-            goalNodeCornerY = canvas.goalNode!!.row * heightPerRect
+            sourceNode.HCost = calculateDistance(sourceNode, goalNode)
+            sourceNode.FCost = sourceNode.GCost + sourceNode.HCost
 
-            canvas.sourceNode!!.GCost = calculateGCost(canvas.sourceNode!!)
-            canvas.sourceNode!!.HCost = calculateHCost(canvas.sourceNode!!)
-            canvas.sourceNode!!.FCost = canvas.sourceNode!!.GCost + canvas.sourceNode!!.HCost
-
-            unevaluatedNodes.add(canvas.sourceNode!!)
+            unevaluatedNodes.add(sourceNode)
         }
 
-        private fun runAlgorithm(canvas: ResizableCanvas) {
+        private fun runAlgorithm(canvas: ResizableCanvas): Boolean {
             val node: GridNode = unevaluatedNodes.minBy { it -> it.FCost }!!
             unevaluatedNodes.remove(node)
             evaluatedNodes.add(node)
 
             if (node === canvas.sourceNode) {
-                return // Found source node
+                return true// Found source node
             }
 
-            for
+            val neighbours: ArrayList<GridNode> = getNodeNeighbours(canvas, node)
 
+            for ( neighbourNode in neighbours ) {
+                if (neighbourNode.obstacle || evaluatedNodes.contains(neighbourNode)) {
+                    continue
+                }
 
+                val nGCost: Double = calculateGCost(node, calculateDistance(neighbourNode, node))
 
+                if (neighbourNode.HCost == 0.0) {
+                    neighbourNode.HCost = calculateDistance(neighbourNode, goalNode)
+                }
+
+                if (nGCost < neighbourNode.GCost || !unevaluatedNodes.contains(neighbourNode)) {
+                    neighbourNode.GCost = nGCost
+                    neighbourNode.FCost = neighbourNode.GCost + neighbourNode.HCost
+                    neighbourNode.parentNode = node
+
+                    if (!unevaluatedNodes.contains(neighbourNode)) {
+                        unevaluatedNodes.add(neighbourNode)
+                    }
+                }
+
+            }
+
+            return false
         }
 
         private fun getNodeNeighbours(canvas: ResizableCanvas, node: GridNode): ArrayList<GridNode> {
@@ -91,48 +110,21 @@ class AStarAlgorithm {
             return neighbours
         }
 
-//            for ( row in 0 until canvas.size) {
-//                for ( col in 0 until canvas.size ) {
-//                    val node: GridNode = canvas.getNode(row, col)
-//                    val nodeCornerX: Double = node.col * widthPerRect
-//                    val nodeCornerY: Double = node.row * heightPerRect
-//
-//                    // calculate node G cost
-//                    node.GCost = calculateDistance(
-//                        nodeCornerX, nodeCornerY,
-//                        sourceNodeCornerX, sourceNodeCornerY
-//                    )
-//
-//                    node.HCost = calculateDistance(
-//                        nodeCornerX, nodeCornerY,
-//                        goalNodeCornerX, goalNodeCornerY
-//                    )
-//
-//                    node.FCost = node.GCost + node.HCost
-//                }
-//            }
-
-        // Distance of node from source node
-        private fun calculateGCost(node: GridNode): Double {
-            val nodeCornerX: Double = node.col * widthPerRect
-            val nodeCornerY: Double = node.row * heightPerRect
-            return calculateDistance(
-                nodeCornerX, nodeCornerY,
-                sourceNodeCornerX, sourceNodeCornerY
-            )
+        private fun calculateGCost(node: GridNode?, distance: Double): Double {
+            return if (node === null) {
+                distance
+            } else {
+                calculateGCost(node.parentNode, distance+node.GCost)
+            }
         }
 
-        // Distance of node from goal node
-        private fun calculateHCost(node: GridNode): Double {
-            val nodeCornerX: Double = node.col * widthPerRect
-            val nodeCornerY: Double = node.row * heightPerRect
-            return calculateDistance(
-                nodeCornerX, nodeCornerY,
-                goalNodeCornerX, goalNodeCornerY
-            )
-        }
+        private fun calculateDistance(node1: GridNode, node2: GridNode): Double {
+            val node1CornerX: Double = node1.col * widthPerRect
+            val node1CornerY: Double = node1.row * heightPerRect
 
-        private fun calculateDistance(node1CornerX: Double, node1CornerY: Double, node2CornerX: Double, node2CornerY: Double): Double {
+            val node2CornerX: Double = node2.col * widthPerRect
+            val node2CornerY: Double = node2.row * heightPerRect
+
             return sqrt(
                 (node2CornerX - node1CornerX).pow(2) + (node2CornerY - node1CornerY).pow(2)
             )

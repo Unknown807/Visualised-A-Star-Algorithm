@@ -3,9 +3,7 @@ package org.mg.algorithm
 import org.mg.custom.GridNode
 import org.mg.custom.ResizableCanvas
 import kotlin.collections.ArrayList
-import kotlin.math.min
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 class AStarAlgorithm {
 
@@ -48,7 +46,6 @@ class AStarAlgorithm {
         }
 
         private fun runAlgorithm(canvas: ResizableCanvas): Boolean {
-            //val node: GridNode = unevaluatedNodes.minBy { it -> it.FCost }!!
             val node: GridNode = getMinFCostNode()
 
             unevaluatedNodes.remove(node)
@@ -64,13 +61,13 @@ class AStarAlgorithm {
             val neighbours: ArrayList<GridNode> = getNodeNeighbours(canvas, node)
 
             for ( neighbourNode in neighbours ) {
-                if (neighbourNode.obstacle || evaluatedNodes.contains(neighbourNode)) {
+                if (neighbourNode.obstacle ||evaluatedNodes.contains(neighbourNode)) {
                     continue
                 }
 
-                val nGCost: Double = calculateGCost(node, calculateDistance(neighbourNode, node))
+                val nGCost: Int = node.GCost + calculateDistance(node, neighbourNode)
 
-                if (neighbourNode.HCost == 0.0) {
+                if (neighbourNode.HCost == 0) {
                     neighbourNode.HCost = calculateDistance(neighbourNode, goalNode)
                 }
 
@@ -121,6 +118,7 @@ class AStarAlgorithm {
 
         private fun getNodeNeighbours(canvas: ResizableCanvas, node: GridNode): ArrayList<GridNode> {
             val neighbours: ArrayList<GridNode> = ArrayList()
+
             val neighbourPositions: Array<Pair<Int, Int>> = arrayOf(
                 Pair(-1, -1), // Top left corner
                 Pair(0, -1), // Top
@@ -146,24 +144,16 @@ class AStarAlgorithm {
             return neighbours
         }
 
-        private fun calculateGCost(node: GridNode?, distance: Double): Double {
-            return if (node === null) {
-                distance
+        // Code here replaced my other two longer methods. Thanks to Sebastian Lague.
+        private fun calculateDistance(node1: GridNode, node2: GridNode): Int {
+            val dstX: Int = abs(node1.col - node2.col)
+            val dstY: Int = abs(node1.row - node2.row)
+
+            return if (dstX > dstY) {
+                14 * dstY + 10 * (dstX - dstY)
             } else {
-                calculateGCost(node.parentNode, distance+node.GCost)
+                14 * dstX + 10 * (dstY - dstX)
             }
-        }
-
-        private fun calculateDistance(node1: GridNode, node2: GridNode): Double {
-            val node1CornerX: Double = node1.col * widthPerRect
-            val node1CornerY: Double = node1.row * heightPerRect
-
-            val node2CornerX: Double = node2.col * widthPerRect
-            val node2CornerY: Double = node2.row * heightPerRect
-
-            return sqrt(
-                (node2CornerX - node1CornerX).pow(2) + (node2CornerY - node1CornerY).pow(2)
-            )
         }
 
     }

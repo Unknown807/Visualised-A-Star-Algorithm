@@ -3,9 +3,9 @@ package org.mg.custom
 class GridNode(var row: Int, var col: Int) {
     var parentNode: GridNode? = null
 
-    var HCost: Double = 0.0
-    var GCost: Double = 0.0
-    var FCost: Double = 0.0
+    var HCost: Int = 0
+    var GCost: Int = 0
+    var FCost: Int = 0
 
     var obstacle: Boolean = false
     var source: Boolean = false

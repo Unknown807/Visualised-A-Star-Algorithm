@@ -117,12 +117,11 @@ class AStarAlgorithm {
             canvas.draw()
         }
 
-        private fun drawPath(canvas: ResizableCanvas, node: GridNode?) {
-            if (node === null) {
-                return
-            } else {
-                canvas.fillRect(node.row, node.col)
-                return drawPath(canvas, node.parentNode)
+        private fun drawPath(canvas: ResizableCanvas, node: GridNode) {
+            var currentNode: GridNode? = node
+            while (currentNode !== null) {
+                canvas.fillRect(currentNode.row, currentNode.col)
+                currentNode = currentNode.parentNode
             }
         }
 
